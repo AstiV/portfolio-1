@@ -10,18 +10,18 @@ export const Projects = () => {
   const { theme } = useContext(ThemeContext);
   const {
     github: {
-      viewer: {
-        repositories: { edges },
+      user: { 
+        pinnedItems: { nodes }
       },
     },
   } = useStaticQuery(
     graphql`
       {
         github {
-          viewer {
-            repositories(first: 8, orderBy: { field: STARGAZERS, direction: DESC }) {
-              edges {
-                node {
+          user(login: "AstiV") {
+            pinnedItems(first: 6, types: REPOSITORY) {
+              nodes {
+                ... on GitHub_Repository {
                   id
                   name
                   url
@@ -32,14 +32,14 @@ export const Projects = () => {
                   forkCount
                   languages(first: 3) {
                     nodes {
-                      id,
+                      id
                       name
                     }
                   }
                 }
               }
             }
-          }
+          }  
         }
       }
     `
@@ -48,7 +48,7 @@ export const Projects = () => {
     <Wrapper as={Container} id="projects">
       <h2>Projects</h2>
       <Grid>
-        {edges.map(({ node }) => (
+        {nodes.map(( node ) => (
           <Item key={node.id} as="a" href={node.url} target="_blank" rel="noopener noreferrer" theme={theme}>
             <Card theme={theme}>
               <Content>
@@ -58,7 +58,7 @@ export const Projects = () => {
               <TitleWrap>
                 <Stats theme={theme}>
                   <div>
-                    <Star color={theme === "light" ? "#000" : "#fff"} />
+                    <Star color={theme === "light" ?  "000" : "#fff"} />
                     <span>{node.stargazers.totalCount}</span>
                   </div>
                   <div>
